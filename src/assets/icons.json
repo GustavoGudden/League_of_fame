@@ -1,0 +1,28 @@
+{
+  "roles": [
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_assassin.png"
+    },
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_fighter.png"
+    },
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_mage1.png"
+    },
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_marksman.png"
+    },
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_support.png"
+    },
+    {
+      "alt": "assasin logo",
+      "source": "/images/roles/role_icon_tank.png"
+    }
+  ]
+}
