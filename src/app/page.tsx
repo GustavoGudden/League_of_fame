@@ -10,7 +10,7 @@ import { Button, CategoryBox, SearchComponent, ChampionBox } from '@/components/
 
 // Hooks
 import { useEffect, useState } from 'react';
-import { GetAllChamapionData, getAllChampion } from '@/repositories';
+import { GetAllChamapionData, addLike, getAllChampion, removeLike } from '@/repositories';
 
 // DataHelpers
 import { RoleName, dataRoles } from '@/common/data/data-roles';
@@ -19,16 +19,31 @@ function Home() {
   const router = useRouter();
   const [value, setValue] = useState('');
   const [rolesSelected, setRolesSelected] = useState({ Assassin: false, Tank: false, Support: false, Mage: false, Fighter: false, Marksman: false });
+  const [champions, setChampions] = useState<GetAllChamapionData>({
+    result: [],
+    total: 0,
+  });
 
   const handleChangeValue = (inputValue: string) => {
     setValue(inputValue);
     console.log(inputValue);
   };
 
-  const [champions, setChampions] = useState<GetAllChamapionData>({
-    result: [],
-    total: 0,
-  });
+  const handleADDlike = async (championId: string) => {
+    try {
+      const response = await addLike(championId);
+    } catch (error) {
+      console.log({ message: error });
+    }
+  };
+
+  const handleRemoveLike = async (championId: string) => {
+    try {
+      const response = await removeLike(championId);
+    } catch (error) {
+      console.log({ message: error });
+    }
+  };
 
   async function fetchChampions() {
     try {
@@ -85,7 +100,7 @@ function Home() {
                 return value.length < 3 ? true : champInfo.name.toLocaleLowerCase().includes(value.toLowerCase());
               })
               .map((champInfo, index) => {
-                return <ChampionBox key={index} champInfo={champInfo} />;
+                return <ChampionBox handleRemoveLike={handleRemoveLike} handleAddLike={handleADDlike} key={index} champInfo={champInfo} />;
               })}
         </div>
       </section>

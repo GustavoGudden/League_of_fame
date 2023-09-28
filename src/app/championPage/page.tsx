@@ -1,65 +1,83 @@
 'use client';
-import { Button, SearchComponent } from '@/components/ui';
-import { Podium } from './layout/Podium';
-import { ChampionModel } from '@/models/champion.model';
+import { useEffect, useState } from 'react';
+
+// Components
 import Header from '@/components/layout/Header/Header';
 import { OtherPositionsCard } from './layout/OtherPositionsCard';
-import { useState } from 'react';
+import { Button, SearchComponent } from '@/components/ui';
+import { Podium } from './layout/Podium';
+
+// Repository
+import { GetAllChamapionData, getAllChampion, getPodiumChampions } from '@/repositories';
+
+// Types
+import { ChampionType } from '@/common/types/types';
+
+// Router
+import { useRouter } from 'next/navigation';
 
 function ChampDetailsPage() {
-  const podiumList: ChampionModel[] = [
-    {
-      name: 'Braum',
-      title: 'the Heart of the Freljord',
-      backgroundImage: '/images/background/braum_background.png',
-      icon: '/images/champions/braum_icon.png',
-      backgroundColor: '#15B3D8',
-      banner: '/images/banner/braum_banner.png',
-      role: ['support', 'tank'],
-      likes: 1026,
-    },
-    {
-      name: 'Aatrox',
-      title: 'the Darkin Blade',
-      backgroundImage: '/images/background/aatrox_background.png',
-      icon: '/images/champions/aatrox_icon.png',
-      backgroundColor: '#DB4451',
-      banner: '/images/banner/aatrox_banner.png',
-      role: ['fighter', 'tank'],
-      likes: 32,
-    },
-    {
-      name: 'Akali',
-      title: 'the Rogue Assassin',
-      backgroundImage: '/images/background/akali_background.png',
-      icon: '/images/champions/akali_icon.png',
-      backgroundColor: '#49AE8D',
-      banner: '/images/banner/akali_banner.png',
-      role: ['assasin'],
-      likes: 106,
-    },
-  ];
+  const router = useRouter();
   const [value, setValue] = useState('');
+  const [champions, setChampions] = useState<GetAllChamapionData>({
+    result: [],
+    total: 0,
+  });
+  const [podiumChampion, setPodiumChampion] = useState<ChampionType[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const goNextPage = () => {
+    console.log('next');
+    setCurrentPage(currentPage + 1);
+  };
+
+  const goBackPage = () => {
+    if (currentPage === 1) {
+      return;
+    } else {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const handleChangeValue = (inputValue: string) => {
     setValue(inputValue);
+    console.log(inputValue);
   };
 
-  return (
-    <main className="mx-auto flex max-w-[936px] flex-col gap-[36px] ">
-      <Header />
-      <Podium podiumList={podiumList} />
+  async function fetchChampions() {
+    try {
+      const championData = await getAllChampion(currentPage, 14);
+      const championPodium = await getPodiumChampions();
+      setChampions(championData);
+      setPodiumChampion(championPodium.result);
+    } catch (error) {
+      console.error('Erro ao buscar campeões:', error);
+    }
+  }
 
+  useEffect(() => {
+    fetchChampions();
+    console.log('aaa');
+  }, [currentPage]);
+
+  return (
+    <main className="mx-auto flex max-w-[936px] flex-col gap-[30px] pb-4">
+      <Header />
+      {podiumChampion.length > 0 ? <Podium podiumList={podiumChampion} /> : <div>Aguarde enquanto os dados estão sendo carregados...</div>}
       <section className="flex h-[35px] justify-between">
         <div className=" flex h-full flex-row items-center gap-[10px]">
           <SearchComponent handleChangeValue={handleChangeValue} />
         </div>
-        <Button>VER RESULTADOS</Button>
+        <Button onClick={() => router.push('/')}>QUERO VOTAR</Button>
       </section>
       <section className="grid grid-cols-2 gap-[10px] ">
-        {podiumList.map((champion, index) => (
+        {champions.result.map((champion, index) => (
           <OtherPositionsCard key={index} podiumChampion={champion} position={index} />
         ))}
+      </section>
+      <section className="flex w-full justify-between">
+        <Button onClick={goBackPage}>Voltar</Button>
+        <Button onClick={goNextPage}>Avançar</Button>
       </section>
     </main>
   );

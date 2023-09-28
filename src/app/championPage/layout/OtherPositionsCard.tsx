@@ -1,10 +1,10 @@
 import { delaGothicOne } from '@/app/layout';
-import { ChampionModel } from '@/models/champion.model';
+import { ChampionType } from '@/common/types/types';
 import Image from 'next/image';
 
 interface IPodiumCardProps {
   position: number;
-  podiumChampion: ChampionModel;
+  podiumChampion: ChampionType;
 }
 
 export function OtherPositionsCard({ position, podiumChampion }: IPodiumCardProps) {
@@ -13,7 +13,12 @@ export function OtherPositionsCard({ position, podiumChampion }: IPodiumCardProp
       <div className="items-baselined flex items-center gap-[20px]">
         <h1 className="text-[12px] font-medium text-neutral-100">{position}</h1>
         <div className="flex h-full gap-[10px] ">
-          <Image src={podiumChampion.icon} alt="icon champion" width={30} height={30} />
+          <Image
+            src={`http://ddragon.leagueoflegends.com/cdn/13.18.1/img/champion/${podiumChampion.id}.png`}
+            alt="icon champion"
+            width={30}
+            height={30}
+          />
           <h1 className={`${delaGothicOne.className} text-[16px] font-normal`}>{podiumChampion.name}</h1>
         </div>
       </div>

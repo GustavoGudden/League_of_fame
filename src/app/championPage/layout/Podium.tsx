@@ -1,9 +1,8 @@
-import { ChampionModel } from '@/models/champion.model';
-
 import { PodiumCard } from './PodiumCard';
+import { ChampionType } from '@/common/types/types';
 
 interface IPodiumProps {
-  podiumList: ChampionModel[];
+  podiumList: ChampionType[];
 }
 
 export function Podium({ podiumList }: IPodiumProps) {

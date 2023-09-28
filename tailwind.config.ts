@@ -21,6 +21,9 @@ const config: Config = {
       backgroundImage: {
         homebg: "url('/public/background-image.jpg')",
       },
+      backgroundSize: {
+        '50%': '50%',
+      },
     },
   },
   plugins: [],
